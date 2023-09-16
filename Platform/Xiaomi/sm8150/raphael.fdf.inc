@@ -1,8 +1,8 @@
 // per-device BSP DXEs
 
 FILE DRIVER = 8e9bd160-b184-11df-94e2-0800200c9a66 {
-    SECTION DXE_DEPEX = Platform/EFI_Binaries/Drivers/sm8150/DALSys/DALSys.depex
-    SECTION PE32 = Platform/EFI_Binaries/Drivers/Devices/cepheus/DALSys/DALSys.efi
+    SECTION DXE_DEPEX = Platform/DALSys.depex
+    SECTION PE32 = Platform/DALSys.efi
     SECTION UI = "DALSys"
 }
 
