@@ -23,6 +23,7 @@ jobs:
       matrix:
         device:
           # sm8150
+          - raphael
           - mh2lm
           - betalm
           - nabu
