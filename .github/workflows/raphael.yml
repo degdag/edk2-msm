@@ -14,7 +14,7 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
-    name: Zip installer Build
+    name: Image Build
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -24,16 +24,6 @@ jobs:
         device:
           # sm8150
           - raphael
-          - mh2lm
-          - nabu
-          - cepheus
-          - vayu-huaxing
-          - vayu-tianma
-          # sm8550
-          - fuxi
-          # sm7325
-          - lisa
-
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -41,18 +31,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install requires packages
+      - name: Install required packages
         run: |
+          sudo dpkg --add-architecture i386
+          wget -qO - https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add -
+          sudo add-apt-repository ppa:cybermax-dexter/sdl2-backport
+          sudo apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu $(lsb_release -cs) main"
           sudo apt-get update
-          sudo apt-get -y install build-essential uuid-dev clang llvm iasl nasm gcc-aarch64-linux-gnu abootimg python3-distutils python3-pil python3-git gettext
+          sudo apt-get -y install build-essential uuid-dev clang llvm iasl nasm gcc-aarch64-linux-gnu abootimg python3-distutils python3-pil python3-git gettext libgcc-s1:i386 libstdc++6:i386
+          sudo apt-get install --install-recommends winehq-stable
 
-      - name: Build device ${{ matrix.device }}
+      - name: Build an image for ${{ matrix.device }}
         run: |
-          ./build.sh --device ${{ matrix.device }} --installer-zip
+          ./build.sh --device ${{ matrix.device }}
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3
         with: # Artifact name
           name: ${{ matrix.device }}
           # A file, directory or wildcard pattern that describes what to upload
-          path: ./*.zip
+          path: ./*.img
